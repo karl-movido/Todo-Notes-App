@@ -412,7 +412,8 @@ aside {
 }
 
 /* --- CARDS --- */
-.cards {
+.pinned-container,
+.regular-container {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 	gap: 14px;
@@ -426,7 +427,7 @@ aside {
 	color: var(--muted2);
 	font-weight: 500;
 	margin-bottom: 4px;
-	margin-top: 4px;
+	margin-top: 18px;
 	grid-column: 1 / -1;
 }
 
@@ -464,32 +465,25 @@ aside {
 	transform: translateY(-2px);
 }
 
+.card-tags {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	max-width: 280px;
+	flex-wrap: wrap;
+}
+
 .card-tags span {
 	font-size: 11px;
-	padding: 2px 9px;
+	padding: 2px 8px;
 	border-radius: 20px;
-	margin-right: 2px;
 	font-weight: 500;
 	border: 1px solid var(--border);
+	text-transform: capitalize;
 }
 
 .tag-chip {
-	background: var(--accent-hover);
-}
-
-.priority-high {
-	background: var(--high-priority);
-	border: 1px solid var(--danger);
-}
-
-.priority-medium {
-	background: var(--medium-priority);
-	border: 1px solid var(--warning);
-}
-
-.priority-low {
-	background: var(--low-priority);
-	border: 1px solid var(--info);
+	background: var(--info);
 }
 
 .card-header {
@@ -497,6 +491,38 @@ aside {
 	align-items: center;
 	justify-content: space-between;
 	margin-top: 8px;
+}
+
+.card-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.priority-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%; /* Makes it a perfect circle */
+	display: inline-block;
+	flex-shrink: 0; /* Prevents the circle from squishing if titles are long */
+}
+
+/* Color definitions */
+.dot-high {
+	background-color: var(--high-priority);
+	box-shadow: 0 0 6px var(--high-priority); /* Optional: Gives high priority a subtle, clean glow */
+}
+
+.dot-medium {
+	background-color: var(--medium-priority);
+}
+
+.dot-low {
+	background-color: var(--low-priority);
+}
+
+.dot-none {
+	display: none; /* If there's no priority, hide the dot entirely! */
 }
 
 .card-title {
@@ -550,6 +576,7 @@ aside {
 	-webkit-line-clamp: 4;
 	-webkit-box-orient: vertical;
 	flex: 1;
+	white-space: pre-line;
 }
 
 .card-footer {
