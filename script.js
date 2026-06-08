@@ -50,8 +50,41 @@ function getPinnedItems() {
 	return items.filter((item) => item.isPinned);
 }
 
+function createItem(type, title, body, tags = [], priority = 'none') {
+	const newItem = {
+		id: crypto.randomUUID(),
+		type,
+		title,
+		body,
+		isPinned: false,
+		isCompleted: false,
+		priority,
+		tags,
+		createdAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString(),
+	};
+
+	items.push(newItem);
+	return newItem;
+}
+
+function updateItem(id, updates) {
+	items = items.map((item) => {
+		if (item.id === id) {
+			return { ...item, ...updates, updatedAt: new Date().toISOString() };
+		}
+		return item;
+	});
+
+	return items.find((item) => item.id === id) || null;
+}
+
+function deleteItem(id) {
+	items = items.filter((item) => item.id !== id);
+}
+
 function getItems() {
 	return items;
 }
 
-console.log(getPinnedItems());
+console.log(createItem('task', 'Buy groceries', 'Milk, sugar, coffee', ['Personal', 'Grocery']));
