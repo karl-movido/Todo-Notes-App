@@ -655,6 +655,7 @@ aside {
 .details-title {
 	font-size: 24px;
 	color: var(--text);
+	margin-bottom: 8px;
 }
 
 .details-body {
@@ -663,15 +664,38 @@ aside {
 	line-height: 1.55;
 }
 
+.details-footer {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
 .details-meta {
 	font-size: 14px;
 	color: var(--muted);
-	margin-bottom: 18px;
+	margin-bottom: 12px;
+}
+
+.priority {
+	font-size: 14px;
+	margin-bottom: 12px;
+}
+
+.priority.high {
+	color: var(--danger);
+}
+
+.priority.medium {
+	color: var(--warning);
+}
+
+.priority.low {
+	color: var(--info);
 }
 
 .details-tag {
 	display: flex;
-	gap: 8px;
+	gap: 6px;
 }
 
 .details-tag span {
