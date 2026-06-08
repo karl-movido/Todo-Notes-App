@@ -35,20 +35,22 @@
 				<div class="sidebar-section-label">Workspace</div>
 				<div class="sidebar-item active">
 					<i data-lucide="layout-grid"></i>
-					All items <span class="count" id="count-all">0</span>
+					All items <span class="count" id="count-all">10</span>
 				</div>
-				<div class="sidebar-item active">
+				<div class="sidebar-item">
 					<i data-lucide="layout-list"></i>
-					To-do <span class="count" id="count-all">0</span>
+					To-do <span class="count" id="count-all">4</span>
 				</div>
-				<div class="sidebar-item active">
+				<div class="sidebar-item">
 					<i data-lucide="notebook-pen"></i>
-					Notes <span class="count" id="count-all">0</span>
+					Notes<span class="count" id="count-all">6</span>
 				</div>
 				<div class="divider"></div>
 				<div class="sidebar-section-label">Tags</div>
 				<div class="tag-list" id="tag-list">
-					<div>No tags yet</div>
+					<div class="tag-item active"><span class="tag-dot"></span>work<span class="tag-count">2</span></div>
+					<div class="tag-item"><span class="tag-dot"></span>school<span class="tag-count">4</span></div>
+					<div class="tag-item"><span class="tag-dot"></span>gym<span class="tag-count">3</span></div>
 				</div>
 			</aside>
 
@@ -68,8 +70,221 @@
 						New
 					</button>
 				</div>
-				<div class="cards" id="cards"></div>
+				<div class="filter">
+					<div class="filter-item active">All</div>
+					<div class="filter-item">Recent</div>
+					<div class="filter-item">Completed</div>
+				</div>
+				<div class="cards" id="cards">
+					<!-- SECTION: pinned notes -->
+					<div class="section-head">📌 Pinned</div>
+
+					<div class="card pinned">
+						<div class="card-top">
+							<div class="card-tags">
+								<span class="tag-chip">Personal</span>
+								<span class="priority-medium">Medium</span>
+							</div>
+							<div class="card-header">
+								<div class="card-title">Buy Groceries</div>
+							</div>
+						</div>
+						<div class="card-body">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore doloribus vitae qui nihil aliquid
+							facere, voluptate, aperiam quod obcaecati cum culpa accusamus, animi accusantium temporibus! Officia illo
+							assumenda fuga iure?
+						</div>
+						<div class="card-footer">
+							<span class="card-date">8h ago</span>
+							<button class="icon-btn menu"><i data-lucide="ellipsis-vertical"></i></button>
+							<div class="menu-actions">
+								<button class="menu-action icon-btn">
+									<i data-lucide="pencil"></i><span class="action-title">Edit</span>
+								</button>
+								<button class="menu-action icon-btn">
+									<i data-lucide="pin"></i><span class="action-title">Pin</span>
+								</button>
+								<button class="menu-action icon-btn danger">
+									<i data-lucide="trash"></i><span class="action-title">Delete</span>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="card task done-card pinned">
+						<div class="card-top">
+							<div class="card-tags">
+								<span class="tag-chip">Personal</span>
+								<span class="priority-high">High</span>
+							</div>
+							<div class="card-header">
+								<div class="card-title done">Buy Groceries</div>
+								<button class="icon-btn check"><i data-lucide="circle"></i></button>
+							</div>
+						</div>
+						<div class="card-body">Milk, eggs, bread, coffee beans</div>
+						<div class="card-footer">
+							<span class="card-date">8h ago</span>
+							<button class="icon-btn menu"><i data-lucide="ellipsis-vertical"></i></button>
+						</div>
+					</div>
+
+					<div class="section-head">Others</div>
+
+					<div class="card task">
+						<div class="card-top">
+							<div class="card-tags">
+								<span class="tag-chip">Personal</span>
+								<span class="priority-medium">Medium</span>
+							</div>
+							<div class="card-header">
+								<div class="card-title">Buy Groceries</div>
+							</div>
+						</div>
+						<div class="card-body">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore doloribus vitae qui nihil aliquid
+							facere, voluptate, aperiam quod obcaecati cum culpa accusamus, animi accusantium temporibus! Officia illo
+							assumenda fuga iure?
+						</div>
+						<div class="card-footer">
+							<span class="card-date">8h ago</span>
+							<button class="icon-btn menu"><i data-lucide="ellipsis-vertical"></i></button>
+							<div class="menu-actions">
+								<button class="menu-action icon-btn">
+									<i data-lucide="pencil"></i><span class="action-title">Edit</span>
+								</button>
+								<button class="menu-action icon-btn">
+									<i data-lucide="pin"></i><span class="action-title">Pin</span>
+								</button>
+								<button class="menu-action icon-btn danger">
+									<i data-lucide="trash"></i><span class="action-title">Delete</span>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-top">
+							<div class="card-tags">
+								<span class="tag-chip">Personal</span>
+								<span class="priority-medium">Medium</span>
+							</div>
+							<div class="card-header">
+								<div class="card-title">Buy Groceries</div>
+							</div>
+						</div>
+						<div class="card-body">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore doloribus vitae qui nihil aliquid
+							facere, voluptate, aperiam quod obcaecati cum culpa accusamus, animi accusantium temporibus! Officia illo
+							assumenda fuga iure?
+						</div>
+						<div class="card-footer">
+							<span class="card-date">8h ago</span>
+							<button class="icon-btn menu"><i data-lucide="ellipsis-vertical"></i></button>
+							<div class="menu-actions">
+								<button class="menu-action icon-btn">
+									<i data-lucide="pencil"></i><span class="action-title">Edit</span>
+								</button>
+								<button class="menu-action icon-btn">
+									<i data-lucide="pin"></i><span class="action-title">Pin</span>
+								</button>
+								<button class="menu-action icon-btn danger">
+									<i data-lucide="trash"></i><span class="action-title">Delete</span>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-top">
+							<div class="card-tags">
+								<span class="tag-chip">Personal</span>
+								<span class="priority-medium">Medium</span>
+							</div>
+							<div class="card-header">
+								<div class="card-title">Buy Groceries</div>
+							</div>
+						</div>
+						<div class="card-body">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore doloribus vitae qui nihil aliquid
+							facere, voluptate, aperiam quod obcaecati cum culpa accusamus, animi accusantium temporibus! Officia illo
+							assumenda fuga iure?
+						</div>
+						<div class="card-footer">
+							<span class="card-date">8h ago</span>
+							<button class="icon-btn menu"><i data-lucide="ellipsis-vertical"></i></button>
+							<div class="menu-actions">
+								<button class="menu-action icon-btn">
+									<i data-lucide="pencil"></i><span class="action-title">Edit</span>
+								</button>
+								<button class="menu-action icon-btn">
+									<i data-lucide="pin"></i><span class="action-title">Pin</span>
+								</button>
+								<button class="menu-action icon-btn danger">
+									<i data-lucide="trash"></i><span class="action-title">Delete</span>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-top">
+							<div class="card-tags">
+								<span class="tag-chip">Personal</span>
+								<span class="priority-medium">Medium</span>
+							</div>
+							<div class="card-header">
+								<div class="card-title">Buy Groceries</div>
+							</div>
+						</div>
+						<div class="card-body">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore doloribus vitae qui nihil aliquid
+							facere, voluptate, aperiam quod obcaecati cum culpa accusamus, animi accusantium temporibus! Officia illo
+							assumenda fuga iure?
+						</div>
+						<div class="card-footer">
+							<span class="card-date">8h ago</span>
+							<button class="icon-btn menu"><i data-lucide="ellipsis-vertical"></i></button>
+							<div class="menu-actions">
+								<button class="menu-action icon-btn">
+									<i data-lucide="pencil"></i><span class="action-title">Edit</span>
+								</button>
+								<button class="menu-action icon-btn">
+									<i data-lucide="pin"></i><span class="action-title">Pin</span>
+								</button>
+								<button class="menu-action icon-btn danger">
+									<i data-lucide="trash"></i><span class="action-title">Delete</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
 			</section>
+
+			<aside class="details">
+				<div class="details-header">
+					<div class="details-section-label">Details</div>
+					<div class="details-actions">
+						<button class="icon-btn"><i data-lucide="pin"></i></button>
+						<button class="icon-btn"><i data-lucide="pencil"></i></button>
+						<button class="icon-btn danger"><i data-lucide="trash"></i></button>
+					</div>
+				</div>
+				<div class="details-main">
+					<h1 class="details-title">Buy Groceries</h1>
+					<div class="details-body">
+						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Expedita laboriosam optio natus iusto cumque
+						deserunt consequatur officiis porro ducimus. Sapiente placeat, ducimus mollitia ipsam nam adipisci eaque
+						impedit sequi alias.
+					</div>
+				</div>
+				<div class="divider"></div>
+				<div class="details-footer">
+					<div class="details-section-label">Activity</div>
+					<div class="details-meta">Created 2h ago</div>
+					<div class="details-section-label">Tags</div>
+					<div class="details-tag">
+						<span class="tag-chip">Personal</span>
+						<span class="priority-medium">Medium</span>
+					</div>
+				</div>
+			</aside>
 		</main>
 
 		<div class="overlay" id="overlay">
@@ -106,7 +321,7 @@
 				</div>
 				<div class="field">
 					<label for="notes">Notes</label>
-					<input type="text" class="input" id="f-tag" placeholder="Add more details..." />
+					<textarea class="textarea" id="f-tag" placeholder="Add more details..."></textarea>
 				</div>
 				<div class="modal-actions">
 					<button class="btn-cancel" id="btn-cancel">Cancel</button>
