@@ -149,9 +149,40 @@ function renderApp() {
 	pinnedContainer.innerHTML = pinnedItems.map((item) => createCardHTML(item)).join('');
 	regularContainer.innerHTML = regularItems.map((item) => createCardHTML(item)).join('');
 
+	updateCounters();
+	renderSidebarTags();
+
 	lucide.createIcons();
 }
 
+function renderSidebarTags() {
+	const tagListContainer = $('tag-list');
+
+	if (!tagListContainer) return;
+
+	let allTags = [];
+	items.forEach((item) => {
+		allTags = allTags.concat(item.tags);
+	});
+
+	const uniqueTags = [...new Set(allTags)];
+
+	tagListContainer.innerHTML = '';
+
+	uniqueTags.forEach((tag) => {
+		const tagCount = items.filter((item) => item.tags.includes(tag)).length;
+
+		const isActive = selectedTag === tag ? 'active' : '';
+
+		const tagHTML = `
+            <div class="tag-item ${isActive}" data-tag="${tag}"><span class="tag-dot"></span>${tag}<span class="tag-count">${tagCount}</span></div>
+        `;
+
+		tagListContainer.insertAdjacentHTML('beforeend', tagHTML);
+	});
+}
+
+// Create a card from item values
 function createCardHTML(item) {
 	let checkboxHTML = '';
 	if (item.type === 'task') {
@@ -191,5 +222,59 @@ function createCardHTML(item) {
     `;
 }
 
+// Filter items by type from sidebar navigation
+const sidebar = document.querySelector('.sidebar');
+
+sidebar.addEventListener('click', (e) => {
+	const sidebarItem = e.target.closest('.sidebar-item');
+
+	if (!sidebarItem) return;
+
+	const targetView = sidebarItem.getAttribute('data-view');
+
+	currentView = targetView;
+
+	document.querySelectorAll('.sidebar-item').forEach((item) => {
+		item.classList.remove('active');
+	});
+
+	sidebarItem.classList.add('active');
+
+	renderApp();
+});
+
+// Filter items by tags from sidebar
+const tagListContainer = $('tag-list');
+
+tagListContainer.addEventListener('click', (e) => {
+	const tagItem = e.target.closest('.tag-item');
+	if (!tagItem) return;
+
+	const clickedTag = tagItem.getAttribute('data-tag');
+
+	if (selectedTag === clickedTag) {
+		selectedTag = null;
+	} else {
+		selectedTag = clickedTag;
+	}
+
+	renderApp();
+});
+
+// Update counters
+function updateCounters() {
+	const countAllEl = $('count-all');
+	const countTaskEl = $('count-task');
+	const countNoteEl = $('count-note');
+
+	const totalItems = items.length;
+
+	const totalTasks = getTasks().length;
+	const totalNotes = getNotes().length;
+
+	if (countAllEl) countAllEl.innerText = totalItems;
+	if (countNoteEl) countNoteEl.innerText = totalNotes;
+	if (countTaskEl) countTaskEl.innerText = totalTasks;
+}
+
 renderApp();
-console.log(createItem('task', 'Buy groceries', 'Milk, sugar, coffee', ['Personal', 'Grocery']));

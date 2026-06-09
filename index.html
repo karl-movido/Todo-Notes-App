@@ -33,25 +33,21 @@
 		<main>
 			<aside class="sidebar">
 				<div class="sidebar-section-label">Workspace</div>
-				<div class="sidebar-item active">
+				<div class="sidebar-item active" data-view="all">
 					<i data-lucide="layout-grid"></i>
 					All items <span class="count" id="count-all">10</span>
 				</div>
-				<div class="sidebar-item">
+				<div class="sidebar-item" data-view="tasks">
 					<i data-lucide="layout-list"></i>
-					To-do <span class="count" id="count-all">4</span>
+					Tasks <span class="count" id="count-task">4</span>
 				</div>
-				<div class="sidebar-item">
+				<div class="sidebar-item" data-view="notes">
 					<i data-lucide="notebook-pen"></i>
-					Notes<span class="count" id="count-all">6</span>
+					Notes<span class="count" id="count-note">6</span>
 				</div>
 				<div class="divider"></div>
 				<div class="sidebar-section-label">Tags</div>
-				<div class="tag-list" id="tag-list">
-					<div class="tag-item active"><span class="tag-dot"></span>work<span class="tag-count">2</span></div>
-					<div class="tag-item"><span class="tag-dot"></span>school<span class="tag-count">4</span></div>
-					<div class="tag-item"><span class="tag-dot"></span>gym<span class="tag-count">3</span></div>
-				</div>
+				<div class="tag-list" id="tag-list"></div>
 			</aside>
 
 			<section class="panel">
