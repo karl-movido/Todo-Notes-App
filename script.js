@@ -281,14 +281,16 @@ function createCardHTML(item) {
 	const priorityDotHTML = `<span class="priority-dot dot-${item.priority}"></span>`;
 
 	const isActive = item.id === selectedItemId ? 'active' : '';
+	const cardStateClass = item.isCompleted ? 'done-card' : '';
+	const titleClass = item.isCompleted ? 'card-title done' : 'card-title';
 
 	return `
-        <div class="card ${isActive}" data-id="${item.id}">
+        <div class="card ${isActive} ${cardStateClass}" data-id="${item.id}">
             <div class="card-top">
                 <div class="card-tags">${tagsHTML}</div>${priorityDotHTML}
             </div>
             <div class="card-header">
-                <div class="card-title">${item.title}</div>
+                <div class="${titleClass}">${item.title}</div>
                 ${checkboxHTML}
             </div>
             <div class="card-body">${item.body}</div>
@@ -438,35 +440,28 @@ function handleCardContainerClick(event) {
 		return;
 	}
 
-	if (event.target.closest('.check')) {
+	const checkBtn = event.target.closest('.check');
+	if (checkBtn) {
+		const card = checkBtn.closest('.card');
+		if (!card) return;
+
+		const targetId = card.getAttribute('data-id');
+		const itemIndex = items.findIndex((item) => item.id === targetId);
+		if (itemIndex === -1) return;
+
+		const item = items[itemIndex];
+		if (item.type === 'task') {
+			items[itemIndex] = {
+				...item,
+				isCompleted: !item.isCompleted,
+				updatedAt: new Date().toISOString(),
+			};
+			renderApp();
+		}
+
 		return;
 	}
-
-	// 4. SELECT CARD FOR DETAILS PANE (If they clicked the body, not a button)
-	const card = event.target.closest('.card');
-	if (!card) return;
-
-	selectedItemId = card.getAttribute('data-id');
-
-	// Visually highlight active card without destroying DOM layout
-	document.querySelectorAll('.card').forEach((c) => c.classList.remove('active'));
-	card.classList.add('active');
-
-	// Re-draws ONLY the details sidebar panel
-	renderDetails();
 }
-
-document.addEventListener('click', (event) => {
-	// If the click happened inside a card menu button or actions list, leave it open
-	if (event.target.closest('.menu') || event.target.closest('.menu-actions')) {
-		return;
-	}
-
-	// Otherwise, close all open menus
-	document.querySelectorAll('.menu-actions').forEach((menu) => {
-		menu.classList.remove('show');
-	});
-});
 
 $('pinned-container').addEventListener('click', handleCardClick);
 $('pinned-container').addEventListener('click', handleCardContainerClick);
@@ -640,7 +635,7 @@ if (btnSave) {
 			return;
 		}
 
-const typeValue = rawTypeValue === 'task' ? 'task' : 'note';
+		const typeValue = rawTypeValue === 'task' ? 'task' : 'note';
 
 		const tagsArray = tagValue
 			? tagValue
