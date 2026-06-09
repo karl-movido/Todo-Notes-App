@@ -70,7 +70,7 @@ function getFilteredItems() {
 	// Filter by view
 	if (currentView === 'notes') {
 		filtered = filtered.filter((item) => item.type === 'note');
-	} else if (currentView === 'task') {
+	} else if (currentView === 'tasks') {
 		filtered = filtered.filter((item) => item.type === 'task');
 	}
 
@@ -137,17 +137,42 @@ function deleteItem(id) {
 function renderApp() {
 	const currentItems = getFilteredItems();
 
-	const pinnedItems = currentItems.filter((item) => item.isPinned);
-	const regularItems = currentItems.filter((item) => !item.isPinned);
+	const pinnedItems = currentItems.filter((item) => item.isPinned === true);
+	const regularItems = currentItems.filter((item) => item.isPinned !== true);
+
+	const pinnedSection = $('pinned-section-wrapper');
+	const regularSection = $('regular-section-wrapper');
 
 	const pinnedContainer = $('pinned-container');
 	const regularContainer = $('regular-container');
+	const pinnedHead = $('pinned-section-head');
+	const regularHead = $('regular-section-head');
 
 	pinnedContainer.innerHTML = '';
 	regularContainer.innerHTML = '';
 
-	pinnedContainer.innerHTML = pinnedItems.map((item) => createCardHTML(item)).join('');
-	regularContainer.innerHTML = regularItems.map((item) => createCardHTML(item)).join('');
+	if (pinnedItems.length === 0) {
+		pinnedSection.style.display = 'none';
+	} else {
+		pinnedSection.style.display = 'block';
+
+		if (currentView === 'all') pinnedHead.innerText = '📌 Pinned';
+		else if (currentView === 'notes') pinnedHead.innerText = '📌 Pinned Notes';
+		else if (currentView === 'tasks') pinnedHead.innerText = '📌 Pinned Tasks';
+
+		pinnedContainer.innerHTML = pinnedItems.map((item) => createCardHTML(item)).join('');
+	}
+
+	if (regularItems.length === 0) {
+		regularSection.style.display = 'none';
+	} else {
+		regularSection.style.display = 'block';
+
+		if (currentView === 'all') regularHead.innerText = 'Recent';
+		else if (currentView === 'notes') regularHead.innerText = 'Notes';
+		else if (currentView === 'tasks') regularHead.innerText = 'Tasks';
+		regularContainer.innerHTML = regularItems.map((item) => createCardHTML(item)).join('');
+	}
 
 	updateCounters();
 	renderSidebarTags();
