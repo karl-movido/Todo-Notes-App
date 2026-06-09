@@ -18,16 +18,6 @@
 			<div class="header-left">
 				<div class="logo">Task<em>Flow</em></div>
 			</div>
-			<div class="header-right">
-				<div class="theme-pills">
-					<button class="theme-btn active">
-						<i data-lucide="sun"></i>
-					</button>
-					<button class="theme-btn">
-						<i data-lucide="moon"></i>
-					</button>
-				</div>
-			</div>
 		</header>
 
 		<main>
@@ -66,10 +56,11 @@
 						New
 					</button>
 				</div>
-				<div class="filter">
-					<div class="filter-item active">All</div>
-					<div class="filter-item">Recent</div>
-					<div class="filter-item">Completed</div>
+				<div class="status" id="status">
+					<div class="status-item active" data-status="all">All</div>
+					<div class="status-item" data-status="active">Active</div>
+					<div class="status-item" data-status="completed">Completed</div>
+					<div class="status-item" data-status="pinned">Pinned</div>
 				</div>
 				<div class="cards" id="cards">
 					<!-- SECTION: pinned notes -->

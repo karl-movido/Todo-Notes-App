@@ -43,7 +43,7 @@ const $ = (id) => document.getElementById(id);
 
 // UI state variables for filtering and search
 let currentView = 'all';
-let currentFilter = 'all';
+let currentStatus = 'all';
 let selectedTag = null;
 let searchQuery = '';
 
@@ -65,24 +65,27 @@ function getPinnedItems() {
 }
 
 function getFilteredItems() {
-	let filtered = getItems();
+	let filtered = items.filter((item) => {
+		const matchesView =
+			currentView === 'all' ||
+			(currentView === 'notes' && item.type === 'note') ||
+			(currentView === 'tasks' && item.type === 'task');
 
-	// Filter by view
-	if (currentView === 'notes') {
-		filtered = filtered.filter((item) => item.type === 'note');
-	} else if (currentView === 'tasks') {
-		filtered = filtered.filter((item) => item.type === 'task');
-	}
+		const matchesTag = !selectedTag || item.tags.includes(selectedTag);
+
+		return matchesView && matchesTag;
+	});
 
 	// Filter by status
-	if (currentFilter === 'completed') {
-		filtered = filtered.filter((item) => item.isCompleted);
+	if (currentStatus === 'completed') {
+		filtered = filtered.filter((item) => item.type === 'task' && item.isCompleted === true);
+	} else if (currentStatus === 'active') {
+		filtered = filtered.filter((item) => item.type === 'note' || (item.type === 'task' && item.isCompleted === false));
+	} else if (currentStatus === 'pinned') {
+		filtered = filtered.filter((item) => item.isPinned === true);
 	}
 
-	// Filter by tag
-	if (selectedTag !== null) {
-		filtered = filtered.filter((item) => item.tags.includes(selectedTag));
-	}
+	filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
 	// Filter by Search Query
 	if (searchQuery.trim() !== '') {
@@ -211,7 +214,7 @@ function renderSidebarTags() {
 function createCardHTML(item) {
 	let checkboxHTML = '';
 	if (item.type === 'task') {
-		checkboxHTML = `<button class="icon-btn check">${item.isCompleted ? `<i data-lucide="circle"></i>` : `<i data-lucide="circle-check"></i>`}</button>`;
+		checkboxHTML = `<button class="icon-btn check">${item.isCompleted ? `<i data-lucide="circle-check"></i>` : `<i data-lucide="circle"></i>`}</button>`;
 	}
 
 	const tagsHTML = item.tags.map((tag) => `<span class="tag-chip">${tag}</span>`).join('');
@@ -282,6 +285,26 @@ tagListContainer.addEventListener('click', (e) => {
 	} else {
 		selectedTag = clickedTag;
 	}
+
+	renderApp();
+});
+
+// Filter items by status
+const statusContainer = $('status');
+
+statusContainer.addEventListener('click', (e) => {
+	const statusItem = e.target.closest('.status-item');
+	if (!statusItem) return;
+
+	const targetStatus = statusItem.getAttribute('data-status');
+
+	currentStatus = targetStatus;
+
+	document.querySelectorAll('.status-item').forEach((item) => {
+		item.classList.remove('active');
+	});
+
+	statusItem.classList.add('active');
 
 	renderApp();
 });

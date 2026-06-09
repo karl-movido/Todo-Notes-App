@@ -287,13 +287,13 @@ aside {
 	min-height: 600px;
 }
 
-.filter {
+.status {
 	display: flex;
 	gap: 8px;
 	align-items: center;
 }
 
-.filter-item {
+.status-item {
 	background: var(--surface);
 	color: var(--muted2);
 	font-size: 13px;
@@ -304,12 +304,12 @@ aside {
 	transition: all 0.15s;
 }
 
-.filter-item:hover {
+.status-item:hover {
 	background: var(--surface2);
 	color: var(--text);
 }
 
-.filter-item.active {
+.status-item.active {
 	background: var(--accent);
 	color: var(--accent-text);
 }
