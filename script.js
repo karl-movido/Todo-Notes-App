@@ -374,11 +374,104 @@ function handleCardClick(event) {
 	renderDetails();
 }
 
+function handleCardContainerClick(event) {
+	event.preventDefault();
+
+	const menuBtn = event.target.closest('.menu');
+	if (menuBtn) {
+		const card = menuBtn.closest('.card');
+		if (card) {
+			document.querySelectorAll('.menu-actions').forEach((menu) => {
+				const parentCard = menu.closest('.card');
+				if (parentCard !== card) {
+					menu.classList.remove('show');
+				}
+			});
+
+			const menuActions = card.querySelector('.menu-actions');
+			if (menuActions) {
+				menuActions.classList.toggle('show');
+			}
+			return;
+		}
+	}
+
+	const actionBtn = event.target.closest('.menu-action');
+	if (actionBtn) {
+		const card = actionBtn.closest('.card');
+		if (!card) return;
+
+		const targetId = card.getAttribute('data-id');
+		const itemIndex = items.findIndex((item) => item.id == targetId);
+		if (itemIndex === -1) return;
+
+		const action = actionBtn.getAttribute('data-action');
+
+		if (action === 'pin') {
+			items[itemIndex].isPinned = !items[itemIndex].isPinned;
+			items[itemIndex].updatedAt = new Date().toISOString();
+			renderApp(); // Re-draws grid, moving the pinned card instantly
+		} else if (action === 'delete') {
+			if (confirm('Are you sure you want to delete this item?')) {
+				items.splice(itemIndex, 1);
+
+				// If the deleted item is currently open in the details pane, close the pane
+				if (selectedItemId === targetId) {
+					selectedItemId = null;
+				}
+
+				renderApp();
+			}
+		} else if (action === 'edit') {
+			console.log('Edit clicked for item:', targetId);
+			// We can wire up your edit modal/form logic here
+		}
+
+		// Hide the action menu after an option is clicked
+		const menuActions = card.querySelector('.menu-actions');
+		if (menuActions) {
+			menuActions.classList.remove('show');
+		}
+
+		return;
+	}
+
+	if (event.target.closest('.check')) {
+		return;
+	}
+
+	// 4. SELECT CARD FOR DETAILS PANE (If they clicked the body, not a button)
+	const card = event.target.closest('.card');
+	if (!card) return;
+
+	selectedItemId = card.getAttribute('data-id');
+
+	// Visually highlight active card without destroying DOM layout
+	document.querySelectorAll('.card').forEach((c) => c.classList.remove('active'));
+	card.classList.add('active');
+
+	// Re-draws ONLY the details sidebar panel
+	renderDetails();
+}
+
+document.addEventListener('click', (event) => {
+	// If the click happened inside a card menu button or actions list, leave it open
+	if (event.target.closest('.menu') || event.target.closest('.menu-actions')) {
+		return;
+	}
+
+	// Otherwise, close all open menus
+	document.querySelectorAll('.menu-actions').forEach((menu) => {
+		menu.classList.remove('show');
+	});
+});
+
 $('pinned-container').addEventListener('click', handleCardClick);
+$('pinned-container').addEventListener('click', handleCardContainerClick);
 $('regular-container').addEventListener('click', handleCardClick);
+$('regular-container').addEventListener('click', handleCardContainerClick);
 
 // Details panel action listener
-
 const detailsAside = document.querySelector('aside.details');
 
 if (detailsAside) {

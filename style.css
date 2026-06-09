@@ -626,10 +626,15 @@ aside {
 	display: none;
 }
 
+.menu-actions.show {
+	display: block;
+}
+
 .menu-action {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	width: 100%;
 }
 
 .action-title {
