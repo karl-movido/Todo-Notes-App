@@ -46,6 +46,8 @@ let currentView = 'all';
 let currentStatus = 'all';
 let selectedTag = null;
 let searchQuery = '';
+let currentSort = 'newest';
+let selectedItemId = null;
 
 // Getter functions for item subsets
 function getItems() {
@@ -65,6 +67,7 @@ function getPinnedItems() {
 }
 
 function getFilteredItems() {
+	// 1. Filter by Sidebar View (all/notes/tasks) and Tags
 	let filtered = items.filter((item) => {
 		const matchesView =
 			currentView === 'all' ||
@@ -76,7 +79,7 @@ function getFilteredItems() {
 		return matchesView && matchesTag;
 	});
 
-	// Filter by status
+	// 2. Filter by status
 	if (currentStatus === 'completed') {
 		filtered = filtered.filter((item) => item.type === 'task' && item.isCompleted === true);
 	} else if (currentStatus === 'active') {
@@ -85,15 +88,28 @@ function getFilteredItems() {
 		filtered = filtered.filter((item) => item.isPinned === true);
 	}
 
-	filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-
-	// Filter by Search Query
+	// 3. Filter by Search Query (Moved UP for optimal performance!)
 	if (searchQuery.trim() !== '') {
 		filtered = filtered.filter(
 			(item) =>
 				item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				item.body.toLowerCase().includes(searchQuery.toLowerCase()),
 		);
+	}
+
+	// 4. Filter by sorting (Now only works on the final group)
+	if (currentSort === 'oldest') {
+		filtered.sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
+	} else if (currentSort === 'priority') {
+		const priorityWeight = { high: 3, medium: 2, low: 1, none: 0 };
+
+		filtered.sort((a, b) => {
+			const weightA = priorityWeight[a.priority] || 0;
+			const weightB = priorityWeight[b.priority] || 0;
+			return weightB - weightA;
+		});
+	} else {
+		filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 	}
 
 	return filtered;
@@ -138,7 +154,7 @@ function deleteItem(id) {
 
 // Render the information to the website
 function renderApp() {
-	const currentItems = getFilteredItems();
+	const currentItems = getFilteredItems() || [];
 
 	const pinnedItems = currentItems.filter((item) => item.isPinned === true);
 	const regularItems = currentItems.filter((item) => item.isPinned !== true);
@@ -177,8 +193,49 @@ function renderApp() {
 		regularContainer.innerHTML = regularItems.map((item) => createCardHTML(item)).join('');
 	}
 
+	const mainWorkspace = $('cards');
+	const noResultMsg = $('no-results');
+
+	if (currentItems.length === 0) {
+		if (!noResultMsg) {
+			const messageHTML = `
+			<div id="no-results" class="empty-state">
+				<i data-lucide="search-x"></i>
+				<p>No notes or tasks match your search.</p>
+			</div>
+		`;
+
+			mainWorkspace.insertAdjacentHTML('beforeend', messageHTML);
+		}
+	} else {
+		if (noResultMsg) {
+			noResultMsg.remove();
+		}
+	}
+
+	const detailsAside = $('details');
+
+	if (detailsAside) {
+		const activeItem = items.find((item) => item.id === selectedItemId);
+
+		detailsAside.innerHTML = createDetailsHTML(activeItem);
+	}
+
+	renderDetails();
+
 	updateCounters();
 	renderSidebarTags();
+
+	lucide.createIcons();
+}
+
+function renderDetails() {
+	const detailsAside = document.querySelector('aside.details');
+	if (!detailsAside) return;
+
+	const activeItem = items.find((item) => item.id === selectedItemId);
+
+	detailsAside.innerHTML = createDetailsHTML(activeItem);
 
 	lucide.createIcons();
 }
@@ -221,8 +278,10 @@ function createCardHTML(item) {
 
 	const priorityDotHTML = `<span class="priority-dot dot-${item.priority}"></span>`;
 
+	const isActive = item.id === selectedItemId ? 'active' : '';
+
 	return `
-        <div class="card" data-id="${item.id}">
+        <div class="card ${isActive}" data-id="${item.id}">
             <div class="card-top">
                 <div class="card-tags">${tagsHTML}</div>${priorityDotHTML}
             </div>
@@ -248,6 +307,107 @@ function createCardHTML(item) {
             </div>
         </div>
     `;
+}
+
+function createDetailsHTML(item) {
+	if (!item) {
+		return `
+			<div class="details-main" style="text-align: center; padding-top: 40px; color: var(--text-muted);">
+                <i data-lucide="notebook-text" style="width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.5;"></i>
+                <p>Select a note or task to view its full details.</p>
+            </div>
+		`;
+	}
+
+	const tagsHTML = item.tags.map((tag) => `<span class="tag-chip">${tag}</span>`).join('');
+
+	const pinIconClass = item.isPinned ? 'pin-off' : 'pin';
+
+	return `
+		<div class="details-header">
+            <div class="details-section-label">Details</div>
+            <div class="details-actions" data-id="${item.id}">
+                <button class="icon-btn action-pin" title="Toggle Pin">
+                    <i data-lucide="${item.isPinned ? 'pin-off' : 'pin'}"></i>
+                </button>
+                <button class="icon-btn action-edit" title="Edit Item"><i data-lucide="pencil"></i></button>
+                <button class="icon-btn danger action-delete" title="Delete Item"><i data-lucide="trash"></i></button>
+            </div>
+        </div>
+        <div class="details-main">
+            <h1 class="details-title">${item.title}</h1>
+            <div class="details-body">${item.body || '<em>No description provided.</em>'}</div>
+        </div>
+        <div class="divider"></div>
+        <div class="details-footer">
+            <div class="details-activity">
+                <div class="details-section-label">Activity</div>
+                <div class="details-meta">Updated ${new Date(item.updatedAt).toLocaleDateString()}</div>
+            </div>
+            <div class="details-priority">
+                <div class="details-section-label">Priority</div>
+                <div class="priority ${item.priority || 'none'}">${item.priority ? item.priority.charAt(0).toUpperCase() + item.priority.slice(1) : 'None'}</div>
+            </div>
+            <div class="details-tags">
+                <div class="details-section-label">Tags</div>
+                <div class="details-tag">
+                    ${tagsHTML || '<span class="text-muted" style="font-size: 0.85rem; font-style: italic;">No tags</span>'}
+                </div>
+            </div>
+        </div>
+	`;
+}
+
+function handleCardClick(event) {
+	if (event.target.closest('.check') || event.target.closest('.menu') || event.target.closest('.menu-actions')) {
+		return;
+	}
+
+	const card = event.target.closest('.card');
+	if (!card) return;
+
+	selectedItemId = card.getAttribute('data-id');
+
+	document.querySelectorAll('.card').forEach((c) => c.classList.remove('active'));
+	card.classList.add('active');
+
+	renderDetails();
+}
+
+$('pinned-container').addEventListener('click', handleCardClick);
+$('regular-container').addEventListener('click', handleCardClick);
+
+// Details panel action listener
+
+const detailsAside = document.querySelector('aside.details');
+
+if (detailsAside) {
+	detailsAside.addEventListener('click', (e) => {
+		const pinBtn = e.target.closest('.action-pin');
+		const deleteBtn = e.target.closest('.action-delete');
+
+		if (!pinBtn && !deleteBtn) return;
+
+		if (!selectedItemId) return;
+
+		const itemIndex = items.findIndex((item) => item.id === selectedItemId);
+
+		if (itemIndex === -1) return;
+
+		if (pinBtn) {
+			items[itemIndex].isPinned = !items[itemIndex].isPinned;
+			items[itemIndex].updatedAt = new Date().toISOString();
+			renderApp();
+		}
+
+		if (deleteBtn) {
+			if (confirm('Are you sure you want to delete this item?')) {
+				items.splice(itemIndex, 1);
+				selectedItemId = null;
+				renderApp();
+			}
+		}
+	});
 }
 
 // Filter items by type from sidebar navigation
@@ -308,6 +468,28 @@ statusContainer.addEventListener('click', (e) => {
 
 	renderApp();
 });
+
+// Filter items by sorting
+const sortSelect = $('sort');
+
+sortSelect.addEventListener('change', (e) => {
+	const selectedSort = e.target.value;
+
+	currentSort = selectedSort;
+
+	renderApp();
+});
+
+// Filter by search query
+const searchInput = $('search');
+
+if (searchInput) {
+	searchInput.addEventListener('input', (e) => {
+		searchQuery = e.target.value;
+
+		renderApp();
+	});
+}
 
 // Update counters
 function updateCounters() {

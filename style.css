@@ -412,6 +412,23 @@ aside {
 }
 
 /* --- CARDS --- */
+.empty-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	height: 50vh;
+	gap: 8px;
+	color: var(--muted2);
+	font-size: 13px;
+}
+
+.empty-state .lucide {
+	width: 32px;
+	height: 32px;
+	color: var(--muted2);
+}
+
 .pinned-container,
 .regular-container {
 	display: grid;
@@ -463,6 +480,10 @@ aside {
 	border-color: var(--border2);
 	background: var(--surface2);
 	transform: translateY(-2px);
+}
+
+.card.active {
+	border-color: var(--accent);
 }
 
 .card-tags {
