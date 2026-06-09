@@ -226,7 +226,9 @@ function renderApp() {
 	updateCounters();
 	renderSidebarTags();
 
-	lucide.createIcons();
+	if (window.lucide) {
+		lucide.createIcons();
+	}
 }
 
 function renderDetails() {
@@ -598,6 +600,79 @@ function updateCounters() {
 	if (countAllEl) countAllEl.innerText = totalItems;
 	if (countNoteEl) countNoteEl.innerText = totalNotes;
 	if (countTaskEl) countTaskEl.innerText = totalTasks;
+}
+
+const overlay = document.getElementById('overlay');
+const btnNew = document.getElementById('btn-new');
+const modalCloseBtn = document.getElementById('modal-close');
+const btnCancel = document.getElementById('btn-cancel');
+const btnSave = document.getElementById('btn-save');
+
+if (btnNew && overlay) {
+	btnNew.addEventListener('click', () => {
+		overlay.classList.toggle('open');
+	});
+}
+
+const closeModal = () => {
+	overlay.classList.remove('open');
+
+	document.getElementById('f-type').value = 'note';
+	document.getElementById('f-priority').value = 'none';
+	document.getElementById('f-tag').value = '';
+	document.getElementById('f-title').value = '';
+	document.getElementById('f-body').value = '';
+};
+
+if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+if (btnCancel) btnCancel.addEventListener('click', closeModal);
+
+if (btnSave) {
+	btnSave.addEventListener('click', () => {
+		const titleValue = document.getElementById('f-title').value.trim();
+		const rawTypeValue = document.getElementById('f-type').value;
+		const priorityValue = document.getElementById('f-priority').value;
+		const bodyValue = document.getElementById('f-body').value;
+		const tagValue = document.getElementById('f-tag').value.trim();
+
+		if (!titleValue) {
+			alert('Please enter a title before saving!');
+			return;
+		}
+
+const typeValue = rawTypeValue === 'task' ? 'task' : 'note';
+
+		const tagsArray = tagValue
+			? tagValue
+					.split(',')
+					.map((t) => t.trim())
+					.filter((t) => t.length > 0)
+			: [];
+
+		const newItem = {
+			id: Date.now().toString(),
+			title: titleValue,
+			type: typeValue,
+			body: bodyValue,
+			priority: priorityValue,
+			tags: tagsArray,
+			isPinned: false,
+			isCompleted: false,
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+		};
+
+		items.push(newItem);
+
+		selectedItemId = newItem.id;
+
+		closeModal();
+		renderApp();
+
+		if (window.lucide) {
+			lucide.createIcons();
+		}
+	});
 }
 
 renderApp();
